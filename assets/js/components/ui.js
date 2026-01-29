@@ -179,3 +179,102 @@ const Loading = {
         if (overlay) overlay.remove();
     }
 };
+
+/**
+ * Sidebar Navigation
+ */
+const Sidebar = {
+    init() {
+        // Elements
+        this.sidebar = document.getElementById('sidebar');
+        if (!this.sidebar) return;
+
+        this.toggleBtn = document.querySelector('.mobile-menu-toggle');
+
+        // Update toggle icon if button exists
+        if (this.toggleBtn) {
+            // Check if it already has the new icon to avoid duplicates if re-initialized
+            if (!this.toggleBtn.querySelector('svg') || this.toggleBtn.textContent.trim() === '☰') {
+                this.toggleBtn.innerHTML = '';
+                this.toggleBtn.appendChild(Icons.create('menu', '', 24));
+            }
+
+            // Remove old onclick if present (handled via HTML update usually, but safety here)
+            this.toggleBtn.removeAttribute('onclick');
+
+            // Clone and replace to remove execution of inline onclick if it lingers
+            // But easier to just add event listener and user might update HTML
+            this.toggleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault(); // Prevent inline handler if possible
+                this.toggle();
+            });
+        }
+
+        // Create overlay if not exists
+        if (!document.querySelector('.sidebar-overlay')) {
+            this.overlay = document.createElement('div');
+            this.overlay.className = 'sidebar-overlay';
+            document.body.appendChild(this.overlay);
+            this.overlay.addEventListener('click', () => this.close());
+        } else {
+            this.overlay = document.querySelector('.sidebar-overlay');
+        }
+
+        // Create close button if not exists
+        if (!this.sidebar.querySelector('.sidebar-close')) {
+            this.closeBtn = document.createElement('button');
+            this.closeBtn.className = 'sidebar-close';
+            this.closeBtn.innerHTML = Icons.get('x', '', 20);
+            this.closeBtn.setAttribute('aria-label', 'Close Menu');
+            this.closeBtn.addEventListener('click', () => this.close());
+
+            const header = this.sidebar.querySelector('.sidebar-header');
+            if (header) {
+                header.appendChild(this.closeBtn);
+            } else {
+                this.sidebar.appendChild(this.closeBtn);
+            }
+        }
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                this.close();
+            }
+        });
+
+        // Handle Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.sidebar.classList.contains('open')) {
+                this.close();
+            }
+        });
+    },
+
+    toggle() {
+        const isOpen = this.sidebar.classList.contains('open');
+        if (isOpen) {
+            this.close();
+        } else {
+            this.open();
+        }
+    },
+
+    open() {
+        this.sidebar.classList.add('open');
+        if (this.overlay) this.overlay.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    },
+
+    close() {
+        this.sidebar.classList.remove('open');
+        if (this.overlay) this.overlay.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+};
+
+// Initialize Sidebar
+document.addEventListener('DOMContentLoaded', () => {
+    Sidebar.init();
+});

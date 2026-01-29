@@ -472,7 +472,7 @@
     <!-- Header -->
     <header class="header">
         <div class="header-search">
-            <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+            <button class="mobile-menu-toggle">
                 <span>☰</span>
             </button>
             <div class="search-wrapper hide-mobile">
@@ -570,11 +570,6 @@
         document.getElementById('userName').textContent = currentUser.name;
         document.getElementById('userRole').textContent = currentUser.role;
         document.getElementById('userAvatar').textContent = Auth.getUserInitials();
-
-        // Toggle sidebar on mobile
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-        }
 
         // Load dashboard metrics
         function loadMetrics() {

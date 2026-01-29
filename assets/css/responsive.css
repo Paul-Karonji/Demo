@@ -106,3 +106,52 @@
         border: 1px solid var(--gray-200);
     }
 }
+
+/* Sidebar Overlay & Mobile Improvements */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 95;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(2px);
+}
+
+.sidebar-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.sidebar-close {
+    display: none;
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    background: var(--gray-100);
+    color: var(--gray-500);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    z-index: 101;
+}
+
+.sidebar-close:hover {
+    background: var(--gray-200);
+    color: var(--danger);
+}
+
+@media (max-width: 1023px) {
+    .sidebar-close {
+        display: flex;
+    }
+}
