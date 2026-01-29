@@ -1,0 +1,699 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMS - Billing & Invoices</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../assets/css/reset.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/typography.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/utilities.css">
+    <link rel="stylesheet" href="../assets/css/animations.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+    <link rel="stylesheet" href="../assets/css/icons.css">
+
+    <style>
+        /* Common styles */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: var(--space-6);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .sidebar-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--text-xl);
+        }
+
+        .sidebar-logo-text {
+            font-size: var(--text-lg);
+            font-weight: var(--font-bold);
+            color: var(--gray-900);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: var(--space-4);
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            color: var(--gray-700);
+            font-weight: var(--font-medium);
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            margin-bottom: var(--space-1);
+        }
+
+        .nav-item:hover {
+            background: var(--gray-50);
+            color: var(--primary-500);
+        }
+
+        .nav-item.active {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .nav-icon {
+            font-size: var(--text-xl);
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            padding: var(--space-4);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            right: 0;
+            height: var(--header-height);
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-6);
+            z-index: 90;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: var(--font-semibold);
+            font-size: var(--text-sm);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding-top: var(--header-height);
+            min-height: 100vh;
+            background: var(--gray-50);
+        }
+
+        .content-area {
+            padding: var(--space-6);
+        }
+
+        /* Billing specific */
+        .billing-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-label {
+            font-size: var(--text-sm);
+            color: var(--gray-500);
+            margin-bottom: var(--space-2);
+        }
+
+        .stat-value {
+            font-size: var(--text-3xl);
+            font-weight: var(--font-bold);
+            color: var(--gray-900);
+        }
+
+        .status-tabs {
+            display: flex;
+            gap: var(--space-2);
+            margin-bottom: var(--space-6);
+            flex-wrap: wrap;
+        }
+
+        .status-tab {
+            padding: var(--space-3) var(--space-6);
+            border-radius: var(--radius-full);
+            background: white;
+            border: 2px solid var(--gray-200);
+            font-weight: var(--font-medium);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .status-tab:hover {
+            border-color: var(--primary-500);
+            color: var(--primary-500);
+        }
+
+        .status-tab.active {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: transparent;
+        }
+
+        .bill-list {
+            display: grid;
+            gap: var(--space-4);
+        }
+
+        .bill-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-fast);
+        }
+
+        .bill-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .bill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--space-4);
+            padding-bottom: var(--space-4);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .bill-info {
+            flex: 1;
+        }
+
+        .bill-number {
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            color: var(--gray-900);
+            margin-bottom: var(--space-1);
+        }
+
+        .bill-meta {
+            display: flex;
+            gap: var(--space-4);
+            font-size: var(--text-sm);
+            color: var(--gray-500);
+            flex-wrap: wrap;
+        }
+
+        .bill-amount {
+            text-align: right;
+        }
+
+        .amount-label {
+            font-size: var(--text-sm);
+            color: var(--gray-500);
+            margin-bottom: var(--space-1);
+        }
+
+        .amount-value {
+            font-size: var(--text-2xl);
+            font-weight: var(--font-bold);
+            color: var(--gray-900);
+        }
+
+        .bill-items {
+            margin-bottom: var(--space-4);
+        }
+
+        .bill-item {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--space-2) 0;
+            border-bottom: 1px solid var(--gray-100);
+            font-size: var(--text-sm);
+        }
+
+        .bill-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-description {
+            color: var(--gray-700);
+        }
+
+        .item-amount {
+            font-weight: var(--font-medium);
+            color: var(--gray-900);
+        }
+
+        .bill-total {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--space-3);
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-4);
+        }
+
+        .bill-actions {
+            display: flex;
+            gap: var(--space-2);
+            justify-content: flex-end;
+        }
+
+        @media (max-width: 1023px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .header {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .bill-header {
+                flex-direction: column;
+            }
+
+            .bill-amount {
+                text-align: left;
+                margin-top: var(--space-2);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="logo-icon"></div>
+                <div class="sidebar-logo-text">HMS</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="../dashboard.html" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="../patients/list.html" class="nav-item">
+                <span class="nav-icon">👥</span>
+                <span>Patients</span>
+            </a>
+            <a href="../patients/queue.html" class="nav-item">
+                <span class="nav-icon">⏱️</span>
+                <span>Queue</span>
+            </a>
+            <a href="../pharmacy/inventory.html" class="nav-item">
+                <span class="nav-icon">💊</span>
+                <span>Pharmacy</span>
+            </a>
+            <a href="../laboratory/requests.html" class="nav-item">
+                <span class="nav-icon">🔬</span>
+                <span>Laboratory</span>
+            </a>
+            <a href="invoices.html" class="nav-item active">
+                <span class="nav-icon">💰</span>
+                <span>Billing</span>
+            </a>
+            <a href="../reports/analytics.html" class="nav-item">
+                <span class="nav-icon">📈</span>
+                <span>Reports</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn btn-ghost w-full" onclick="Auth.logout()">
+                <span>🚪</span>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="user-avatar" id="userAvatar"></div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-area">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Billing & Invoices</h1>
+                    <div class="breadcrumb">
+                        <a href="../dashboard.html">Dashboard</a>
+                        <span class="breadcrumb-separator">›</span>
+                        <span class="breadcrumb-current">Billing</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="billing-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Total Bills</div>
+                    <div class="stat-value" id="totalBills">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pending Amount</div>
+                    <div class="stat-value" id="pendingAmount" style="color: var(--warning);">KES 0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Collected Today</div>
+                    <div class="stat-value" id="collectedToday" style="color: var(--success);">KES 0</div>
+                </div>
+            </div>
+
+            <!-- Status Tabs -->
+            <div class="status-tabs">
+                <button class="status-tab active" data-status="all">All Bills</button>
+                <button class="status-tab" data-status="Pending">Pending</button>
+                <button class="status-tab" data-status="PartiallyPaid">Partially Paid</button>
+                <button class="status-tab" data-status="Paid">Paid</button>
+            </div>
+
+            <!-- Bill List -->
+            <div class="bill-list" id="billList">
+                <!-- Bills will be loaded here -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <div class="empty-state-icon">💰</div>
+                <div class="empty-state-title">No bills found</div>
+                <div class="empty-state-message">Bills will appear here when services are provided</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <!-- Scripts -->
+    <script src="../assets/js/utils/icons.js"></script>
+    <script src="../assets/js/utils/icon-init.js"></script>
+    <script src="../assets/js/core/storage.js"></script>
+    <script src="../assets/js/utils/helpers.js"></script>
+    <script src="../assets/js/data/generator.js"></script>
+    <script src="../assets/js/modules/auth.js"></script>
+    <script src="../assets/js/components/ui.js"></script>
+
+    <script>
+        // Require authentication
+        Auth.requireAuth();
+
+        // Get current user
+        const currentUser = Auth.getCurrentUser();
+        document.getElementById('userAvatar').textContent = Auth.getUserInitials();
+
+        // State
+        let currentStatus = 'all';
+
+        // Load bills
+        function loadBills() {
+            let bills = storage.getAll('bills');
+
+            // Filter by status
+            if (currentStatus !== 'all') {
+                bills = bills.filter(b => b.status === currentStatus);
+            }
+
+            // Sort by date (newest first)
+            bills.sort((a, b) => new Date(b.billDate) - new Date(a.billDate));
+
+            updateStatistics(bills);
+            renderBills(bills);
+        }
+
+        // Update statistics
+        function updateStatistics(filteredBills) {
+            const allBills = storage.getAll('bills');
+            const pendingBills = allBills.filter(b => b.status === 'Pending' || b.status === 'PartiallyPaid');
+            const pendingAmount = pendingBills.reduce((sum, b) => {
+                const paid = (storage.getAll('payments') || [])
+                    .filter(p => p.billId === b.id)
+                    .reduce((s, p) => s + p.amount, 0);
+                return sum + (b.total - paid);
+            }, 0);
+
+            // Collected today
+            const today = new Date().toISOString().split('T')[0];
+            const payments = storage.getAll('payments') || [];
+            const collectedToday = payments
+                .filter(p => p.paymentDate.startsWith(today))
+                .reduce((sum, p) => sum + p.amount, 0);
+
+            document.getElementById('totalBills').textContent = allBills.length;
+            document.getElementById('pendingAmount').textContent = NumberUtils.formatCurrency(pendingAmount);
+            document.getElementById('collectedToday').textContent = NumberUtils.formatCurrency(collectedToday);
+        }
+
+        // Render bills
+        function renderBills(bills) {
+            const billList = document.getElementById('billList');
+            const emptyState = document.getElementById('emptyState');
+
+            if (bills.length === 0) {
+                billList.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            billList.style.display = 'grid';
+            emptyState.style.display = 'none';
+
+            const html = bills.map(bill => {
+                const patient = storage.getById('patients', bill.patientId);
+                const patientName = patient ? `${patient.firstName} ${patient.lastName}` : 'Unknown Patient';
+
+                // Calculate paid amount
+                const payments = (storage.getAll('payments') || []).filter(p => p.billId === bill.id);
+                const paidAmount = payments.reduce((sum, p) => sum + p.amount, 0);
+                const balance = bill.total - paidAmount;
+
+                return `
+          <div class="bill-card">
+            <div class="bill-header">
+              <div class="bill-info">
+                <div class="bill-number">${bill.id}</div>
+                <div class="bill-meta">
+                  <span>👤 ${patientName}</span>
+                  <span>📅 ${DateUtils.formatDate(bill.billDate, 'datetime')}</span>
+                </div>
+              </div>
+              <div class="bill-amount">
+                <div class="amount-label">Total Amount</div>
+                <div class="amount-value">${NumberUtils.formatCurrency(bill.total)}</div>
+                ${paidAmount > 0 ? `
+                  <div style="font-size: var(--text-sm); color: var(--success); margin-top: var(--space-1);">
+                    Paid: ${NumberUtils.formatCurrency(paidAmount)}
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+
+            <div class="bill-items">
+              ${bill.items.map(item => `
+                <div class="bill-item">
+                  <span class="item-description">
+                    ${item.description} ${item.quantity > 1 ? `(${item.quantity} × ${NumberUtils.formatCurrency(item.unitPrice)})` : ''}
+                  </span>
+                  <span class="item-amount">${NumberUtils.formatCurrency(item.total)}</span>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="bill-total">
+              <div>
+                <div style="font-size: var(--text-sm); color: var(--gray-600);">Subtotal: ${NumberUtils.formatCurrency(bill.subtotal)}</div>
+                <div style="font-size: var(--text-sm); color: var(--gray-600);">Tax (16%): ${NumberUtils.formatCurrency(bill.tax)}</div>
+              </div>
+              <div>
+                <div style="font-weight: var(--font-bold);">Total: ${NumberUtils.formatCurrency(bill.total)}</div>
+                ${balance > 0 && balance < bill.total ? `
+                  <div style="font-size: var(--text-sm); color: var(--warning);">Balance: ${NumberUtils.formatCurrency(balance)}</div>
+                ` : ''}
+              </div>
+            </div>
+
+            <div class="bill-actions">
+              <span class="badge badge-${bill.status === 'Paid' ? 'success' :
+                        bill.status === 'PartiallyPaid' ? 'warning' :
+                            'danger'
+                    }">
+                ${bill.status}
+              </span>
+              ${bill.status !== 'Paid' ? `
+                <button class="btn btn-primary btn-sm" onclick="processPayment('${bill.id}', ${balance})">
+                  <span>💳</span>
+                  <span>Process Payment</span>
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+            }).join('');
+
+            billList.innerHTML = html;
+        }
+
+        // Status tab switching
+        document.querySelectorAll('.status-tab').forEach(tab => {
+            tab.addEventListener('click', function () {
+                document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentStatus = this.dataset.status;
+                loadBills();
+            });
+        });
+
+        // Process payment
+        function processPayment(billId, balance) {
+            const bill = storage.getById('bills', billId);
+            const patient = storage.getById('patients', bill.patientId);
+
+            Modal.show({
+                title: 'Process Payment',
+                size: 'md',
+                content: `
+          <p><strong>Patient:</strong> ${patient.firstName} ${patient.lastName}</p>
+          <p><strong>Bill:</strong> ${bill.id}</p>
+          <p><strong>Balance:</strong> ${NumberUtils.formatCurrency(balance)}</p>
+          <br>
+          <div class="form-group">
+            <label class="form-label">Payment Amount</label>
+            <input type="number" id="paymentAmount" class="form-input" value="${balance}" step="0.01" min="0" max="${balance}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Payment Method</label>
+            <select id="paymentMethod" class="form-select">
+              <option value="Cash">Cash</option>
+              <option value="M-Pesa">M-Pesa</option>
+              <option value="Card">Card</option>
+              <option value="Insurance">Insurance</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Reference Number (Optional)</label>
+            <input type="text" id="paymentReference" class="form-input" placeholder="e.g., M-Pesa code">
+          </div>
+        `,
+                buttons: [
+                    {
+                        text: 'Cancel',
+                        action: 'cancel',
+                        className: 'btn-secondary',
+                        onClick: () => Modal.close(document.querySelector('.modal-backdrop'))
+                    },
+                    {
+                        text: 'Process Payment',
+                        action: 'confirm',
+                        className: 'btn-primary',
+                        onClick: () => {
+                            const amount = parseFloat(document.getElementById('paymentAmount').value);
+                            const method = document.getElementById('paymentMethod').value;
+                            const reference = document.getElementById('paymentReference').value;
+
+                            if (!amount || amount <= 0) {
+                                Toast.error('Please enter a valid payment amount');
+                                return;
+                            }
+
+                            if (amount > balance) {
+                                Toast.error('Payment amount cannot exceed balance');
+                                return;
+                            }
+
+                            Loading.show('Processing payment...');
+
+                            setTimeout(() => {
+                                // Create payment record
+                                const paymentId = `PAY-${Date.now()}`;
+                                storage.add('payments', {
+                                    id: paymentId,
+                                    billId: bill.id,
+                                    patientId: bill.patientId,
+                                    amount: amount,
+                                    method: method,
+                                    reference: reference || null,
+                                    paymentDate: new Date().toISOString(),
+                                    receivedBy: currentUser.id,
+                                    createdAt: new Date().toISOString()
+                                });
+
+                                // Update bill status
+                                const payments = storage.getAll('payments').filter(p => p.billId === bill.id);
+                                const totalPaid = payments.reduce((sum, p) => sum + p.amount, 0);
+
+                                let newStatus = 'Pending';
+                                if (totalPaid >= bill.total) {
+                                    newStatus = 'Paid';
+                                } else if (totalPaid > 0) {
+                                    newStatus = 'PartiallyPaid';
+                                }
+
+                                storage.update('bills', bill.id, { status: newStatus });
+
+                                Loading.hide();
+                                Toast.success(`Payment of ${NumberUtils.formatCurrency(amount)} processed successfully!`);
+                                Modal.close(document.querySelector('.modal-backdrop'));
+                                loadBills();
+                            }, 1000);
+                        }
+                    }
+                ]
+            });
+        }
+
+        // Initialize
+        loadBills();
+    </script>
+</body>
+
+</html>

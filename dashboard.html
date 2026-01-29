@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Hospital Management System - Dashboard">
+    <title>HMS - Dashboard</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="assets/css/reset.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/typography.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/utilities.css">
+    <link rel="stylesheet" href="assets/css/animations.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <style>
+        /* Icon Styles */
+        .sidebar-logo-icon svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .nav-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .search-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .header-notification svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .mobile-menu-toggle svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .metric-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .activity-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: transform var(--transition-base);
+        }
+
+        .sidebar-header {
+            padding: var(--space-6);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .sidebar-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--text-xl);
+        }
+
+        .sidebar-logo-text {
+            font-size: var(--text-lg);
+            font-weight: var(--font-bold);
+            color: var(--gray-900);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: var(--space-4);
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            color: var(--gray-700);
+            font-weight: var(--font-medium);
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            margin-bottom: var(--space-1);
+        }
+
+        .nav-item:hover {
+            background: var(--gray-50);
+            color: var(--primary-500);
+        }
+
+        .nav-item.active {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-primary);
+        }
+
+        .nav-icon {
+            font-size: var(--text-xl);
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            padding: var(--space-4);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        /* Header Styles */
+        .header {
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            right: 0;
+            height: var(--header-height);
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-6);
+            z-index: 90;
+        }
+
+        .header-search {
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: var(--space-2) var(--space-4);
+            padding-left: var(--space-10);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            transition: all var(--transition-fast);
+            background: var(--gray-50);
+        }
+
+        .search-input:focus {
+            background: white;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: var(--space-4);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .header-notification {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .header-notification:hover {
+            background: var(--gray-100);
+            color: var(--primary-500);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--danger);
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .header-user:hover {
+            background: var(--gray-50);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: var(--font-semibold);
+            font-size: var(--text-sm);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-size: var(--text-sm);
+            font-weight: var(--font-semibold);
+            color: var(--gray-900);
+        }
+
+        .user-role {
+            font-size: var(--text-xs);
+            color: var(--gray-500);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding-top: var(--header-height);
+            min-height: 100vh;
+            background: var(--gray-50);
+        }
+
+        .content-area {
+            padding: var(--space-6);
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-6);
+            margin-bottom: var(--space-8);
+        }
+
+        /* Charts */
+        .chart-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--space-6);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-4);
+        }
+
+        .chart-title {
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            color: var(--gray-900);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Recent Activity */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+
+        .activity-item {
+            display: flex;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+        }
+
+        .activity-item:hover {
+            background: var(--gray-100);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-lg);
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: var(--font-medium);
+            color: var(--gray-900);
+            margin-bottom: var(--space-1);
+        }
+
+        .activity-time {
+            font-size: var(--text-sm);
+            color: var(--gray-500);
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-700);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .mobile-menu-toggle:hover {
+            background: var(--gray-100);
+        }
+
+        @media (max-width: 1023px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+                box-shadow: var(--shadow-2xl);
+            }
+
+            .header {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+            }
+
+            .user-info {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon">⚕</div>
+                <div class="sidebar-logo-text">HMS</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item active">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="patients/list.html" class="nav-item">
+                <span class="nav-icon">👥</span>
+                <span>Patients</span>
+            </a>
+            <a href="patients/queue.html" class="nav-item">
+                <span class="nav-icon">⏱️</span>
+                <span>Queue</span>
+            </a>
+            <a href="pharmacy/inventory.html" class="nav-item">
+                <span class="nav-icon">💊</span>
+                <span>Pharmacy</span>
+            </a>
+            <a href="laboratory/requests.html" class="nav-item">
+                <span class="nav-icon">🔬</span>
+                <span>Laboratory</span>
+            </a>
+            <a href="billing/invoices.html" class="nav-item">
+                <span class="nav-icon">💰</span>
+                <span>Billing</span>
+            </a>
+            <a href="reports/analytics.html" class="nav-item">
+                <span class="nav-icon">📈</span>
+                <span>Reports</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn btn-ghost w-full" onclick="Auth.logout()">
+                <span>🚪</span>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-search">
+            <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+                <span>☰</span>
+            </button>
+            <div class="search-wrapper hide-mobile">
+                <span class="search-icon">🔍</span>
+                <input type="search" class="search-input" placeholder="Search patients, doctors, or departments...">
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <div class="header-notification">
+                <span>🔔</span>
+                <span class="notification-badge"></span>
+            </div>
+
+            <div class="header-user" id="userMenu">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div class="user-info">
+                    <div class="user-name" id="userName"></div>
+                    <div class="user-role" id="userRole"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-area">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Dashboard</h1>
+                    <div class="breadcrumb">
+                        <span class="breadcrumb-current">Dashboard</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metrics Cards -->
+            <div class="metrics-grid" id="metricsGrid">
+                <!-- Metrics will be loaded here -->
+            </div>
+
+            <!-- Charts Row -->
+            <div class="grid grid-cols-1 gap-6" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));">
+                <!-- Patient Visits Chart -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Patient Visits (Last 7 Days)</h3>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="visitsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Revenue Chart -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Revenue by Category</h3>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3 class="chart-title">Recent Activity</h3>
+                </div>
+                <div class="activity-list" id="activityList">
+                    <!-- Activity items will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="assets/js/utils/icons.js"></script>
+    <script src="assets/js/utils/icon-init.js"></script>
+    <script src="assets/js/core/storage.js"></script>
+    <script src="assets/js/utils/helpers.js"></script>
+    <script src="assets/js/data/generator.js"></script>
+    <script src="assets/js/modules/auth.js"></script>
+    <script src="assets/js/components/ui.js"></script>
+
+    <script>
+        // Require authentication
+        Auth.requireAuth();
+
+        // Get current user
+        const currentUser = Auth.getCurrentUser();
+
+        // Update header with user info
+        document.getElementById('userName').textContent = currentUser.name;
+        document.getElementById('userRole').textContent = currentUser.role;
+        document.getElementById('userAvatar').textContent = Auth.getUserInitials();
+
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Load dashboard metrics
+        function loadMetrics() {
+            const patients = storage.getAll('patients');
+            const queue = storage.getAll('queue');
+            const bills = storage.getAll('bills');
+            const prescriptions = storage.getAll('prescriptions');
+
+            const metrics = [
+                {
+                    icon: '👥',
+                    iconClass: 'primary',
+                    label: 'Total Patients',
+                    value: NumberUtils.formatNumber(patients.length),
+                    trend: '+5.2%',
+                    trendUp: true,
+                    subtitle: 'this month'
+                },
+                {
+                    icon: '⏱️',
+                    iconClass: 'warning',
+                    label: 'Patients in Queue',
+                    value: queue.filter(q => q.status === 'Waiting').length,
+                    trend: 'Real-time',
+                    trendUp: false,
+                    subtitle: 'waiting'
+                },
+                {
+                    icon: '💰',
+                    iconClass: 'success',
+                    label: 'Pending Bills',
+                    value: bills.filter(b => b.status === 'Pending').length,
+                    trend: `${NumberUtils.formatCurrency(bills.filter(b => b.status === 'Pending').reduce((sum, b) => sum + b.balance, 0))}`,
+                    trendUp: false,
+                    subtitle: 'outstanding'
+                },
+                {
+                    icon: '💊',
+                    iconClass: 'danger',
+                    label: 'Pending Prescriptions',
+                    value: prescriptions.filter(p => p.status === 'Pending').length,
+                    trend: 'Needs attention',
+                    trendUp: false,
+                    subtitle: 'to dispense'
+                }
+            ];
+
+            const metricsHTML = metrics.map(metric => `
+        <div class="metric-card">
+          <div class="metric-icon ${metric.iconClass}">
+            ${metric.icon}
+          </div>
+          <div class="metric-label">${metric.label}</div>
+          <div class="metric-value">${metric.value}</div>
+          <div class="metric-trend ${metric.trendUp ? 'up' : ''}">
+            ${metric.trendUp ? '↗' : ''} ${metric.trend}
+          </div>
+        </div>
+      `).join('');
+
+            document.getElementById('metricsGrid').innerHTML = metricsHTML;
+        }
+
+        // Load patient visits chart
+        function loadVisitsChart() {
+            const visits = storage.getAll('visits');
+            const last7Days = [];
+            const visitCounts = [];
+
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                last7Days.push(DateUtils.formatDate(date, 'short'));
+
+                const count = visits.filter(v => v.visitDate.startsWith(dateStr)).length;
+                visitCounts.push(count);
+            }
+
+            const ctx = document.getElementById('visitsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: last7Days,
+                    datasets: [{
+                        label: 'Patient Visits',
+                        data: visitCounts,
+                        borderColor: '#6366F1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load revenue chart
+        function loadRevenueChart() {
+            const bills = storage.getAll('bills').filter(b => b.status === 'Paid');
+
+            const categories = {
+                'Consultation': 0,
+                'Pharmacy': 0,
+                'Laboratory': 0,
+                'Other': 0
+            };
+
+            bills.forEach(bill => {
+                bill.items.forEach(item => {
+                    if (categories.hasOwnProperty(item.category)) {
+                        categories[item.category] += item.total;
+                    } else {
+                        categories['Other'] += item.total;
+                    }
+                });
+            });
+
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(categories),
+                    datasets: [{
+                        data: Object.values(categories),
+                        backgroundColor: [
+                            '#6366F1',
+                            '#10B981',
+                            '#F59E0B',
+                            '#EF4444'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load recent activity
+        function loadRecentActivity() {
+            const patients = storage.getAll('patients').slice(-5).reverse();
+            const visits = storage.getAll('visits').slice(-5).reverse();
+            const prescriptions = storage.getAll('prescriptions').slice(-3).reverse();
+
+            const activities = [
+                ...patients.slice(0, 3).map(p => ({
+                    icon: '👤',
+                    iconClass: 'primary',
+                    title: `New patient registered: ${p.firstName} ${p.lastName}`,
+                    time: DateUtils.getTimeAgo(p.registrationDate)
+                })),
+                ...visits.slice(0, 2).map(v => ({
+                    icon: '🏥',
+                    iconClass: 'success',
+                    title: `Consultation completed for ${v.patientName}`,
+                    time: DateUtils.getTimeAgo(v.visitDate)
+                })),
+                ...prescriptions.slice(0, 2).map(p => ({
+                    icon: '💊',
+                    iconClass: 'warning',
+                    title: `Prescription ${p.status.toLowerCase()} for ${p.patientName}`,
+                    time: DateUtils.getTimeAgo(p.date)
+                }))
+            ];
+
+            const activityHTML = activities.map(activity => `
+        <div class="activity-item">
+          <div class="activity-icon ${activity.iconClass}">
+            ${activity.icon}
+          </div>
+          <div class="activity-content">
+            <div class="activity-title">${activity.title}</div>
+            <div class="activity-time">${activity.time}</div>
+          </div>
+        </div>
+      `).join('');
+
+            document.getElementById('activityList').innerHTML = activityHTML;
+        }
+
+        // Initialize dashboard
+        loadMetrics();
+        loadVisitsChart();
+        loadRevenueChart();
+        loadRecentActivity();
+
+        // Welcome message
+        Toast.success(`Welcome back, ${currentUser.name}!`, 2000);
+    </script>
+</body>
+
+</html>

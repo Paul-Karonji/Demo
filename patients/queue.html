@@ -1,0 +1,713 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMS - Queue Management</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../assets/css/reset.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/typography.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/utilities.css">
+    <link rel="stylesheet" href="../assets/css/animations.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+    <link rel="stylesheet" href="../assets/css/icons.css">
+
+    <style>
+        /* Sidebar and header styles (same as other pages) */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: transform var(--transition-base);
+        }
+
+        .sidebar-header {
+            padding: var(--space-6);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .sidebar-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--text-xl);
+        }
+
+        .sidebar-logo-text {
+            font-size: var(--text-lg);
+            font-weight: var(--font-bold);
+            color: var(--gray-900);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: var(--space-4);
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            color: var(--gray-700);
+            font-weight: var(--font-medium);
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            margin-bottom: var(--space-1);
+        }
+
+        .nav-item:hover {
+            background: var(--gray-50);
+            color: var(--primary-500);
+        }
+
+        .nav-item.active {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-primary);
+        }
+
+        .nav-icon {
+            font-size: var(--text-xl);
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            padding: var(--space-4);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            right: 0;
+            height: var(--header-height);
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-6);
+            z-index: 90;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: var(--font-semibold);
+            font-size: var(--text-sm);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-size: var(--text-sm);
+            font-weight: var(--font-semibold);
+            color: var(--gray-900);
+        }
+
+        .user-role {
+            font-size: var(--text-xs);
+            color: var(--gray-500);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding-top: var(--header-height);
+            min-height: 100vh;
+            background: var(--gray-50);
+        }
+
+        .content-area {
+            padding: var(--space-6);
+        }
+
+        /* Queue specific styles */
+        .queue-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-label {
+            font-size: var(--text-sm);
+            color: var(--gray-500);
+            margin-bottom: var(--space-2);
+        }
+
+        .stat-value {
+            font-size: var(--text-3xl);
+            font-weight: var(--font-bold);
+            color: var(--gray-900);
+        }
+
+        .department-tabs {
+            display: flex;
+            gap: var(--space-2);
+            margin-bottom: var(--space-6);
+            flex-wrap: wrap;
+        }
+
+        .department-tab {
+            padding: var(--space-3) var(--space-6);
+            border-radius: var(--radius-full);
+            background: white;
+            border: 2px solid var(--gray-200);
+            font-weight: var(--font-medium);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .department-tab:hover {
+            border-color: var(--primary-500);
+            color: var(--primary-500);
+        }
+
+        .department-tab.active {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: transparent;
+        }
+
+        .queue-list {
+            display: grid;
+            gap: var(--space-4);
+        }
+
+        .queue-item {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            transition: all var(--transition-fast);
+        }
+
+        .queue-item:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .queue-number {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-lg);
+            background: var(--gradient-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-2xl);
+            font-weight: var(--font-bold);
+            flex-shrink: 0;
+        }
+
+        .queue-number.urgent {
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            animation: pulse 2s infinite;
+        }
+
+        .queue-info {
+            flex: 1;
+        }
+
+        .queue-patient-name {
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            color: var(--gray-900);
+            margin-bottom: var(--space-1);
+        }
+
+        .queue-meta {
+            display: flex;
+            gap: var(--space-4);
+            font-size: var(--text-sm);
+            color: var(--gray-500);
+        }
+
+        .queue-actions {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        @media (max-width: 1023px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+                box-shadow: var(--shadow-2xl);
+            }
+
+            .header {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .queue-item {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="logo-icon"></div>
+                <div class="sidebar-logo-text">HMS</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="../dashboard.html" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="list.html" class="nav-item">
+                <span class="nav-icon">👥</span>
+                <span>Patients</span>
+            </a>
+            <a href="queue.html" class="nav-item active">
+                <span class="nav-icon">⏱️</span>
+                <span>Queue</span>
+            </a>
+            <a href="../pharmacy/inventory.html" class="nav-item">
+                <span class="nav-icon">💊</span>
+                <span>Pharmacy</span>
+            </a>
+            <a href="../laboratory/requests.html" class="nav-item">
+                <span class="nav-icon">🔬</span>
+                <span>Laboratory</span>
+            </a>
+            <a href="../billing/invoices.html" class="nav-item">
+                <span class="nav-icon">💰</span>
+                <span>Billing</span>
+            </a>
+            <a href="../reports/analytics.html" class="nav-item">
+                <span class="nav-icon">📈</span>
+                <span>Reports</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn btn-ghost w-full" onclick="Auth.logout()">
+                <span>🚪</span>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-actions">
+            <div class="header-user" id="userMenu">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div class="user-info">
+                    <div class="user-name" id="userName"></div>
+                    <div class="user-role" id="userRole"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-area">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Queue Management</h1>
+                    <div class="breadcrumb">
+                        <a href="../dashboard.html">Dashboard</a>
+                        <span class="breadcrumb-separator">›</span>
+                        <span class="breadcrumb-current">Queue</span>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-primary" onclick="showAddToQueueModal()">
+                        <span>➕</span>
+                        <span>Add to Queue</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Queue Statistics -->
+            <div class="queue-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Total Waiting</div>
+                    <div class="stat-value" id="totalWaiting">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Urgent Cases</div>
+                    <div class="stat-value" id="urgentCases" style="color: var(--danger);">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Average Wait Time</div>
+                    <div class="stat-value" id="avgWaitTime" style="font-size: var(--text-xl);">0 min</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Served Today</div>
+                    <div class="stat-value" id="servedToday" style="color: var(--success);">0</div>
+                </div>
+            </div>
+
+            <!-- Department Tabs -->
+            <div class="department-tabs">
+                <button class="department-tab active" data-department="all">All Departments</button>
+                <button class="department-tab" data-department="General">General</button>
+                <button class="department-tab" data-department="Pediatrics">Pediatrics</button>
+                <button class="department-tab" data-department="Dental">Dental</button>
+                <button class="department-tab" data-department="Gynecology">Gynecology</button>
+            </div>
+
+            <!-- Queue List -->
+            <div class="queue-list" id="queueList">
+                <!-- Queue items will be loaded here -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <div class="empty-state-icon">⏱️</div>
+                <div class="empty-state-title">No patients in queue</div>
+                <div class="empty-state-message">Add patients to the queue to get started</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <!-- Scripts -->
+    <script src="../assets/js/utils/icons.js"></script>
+    <script src="../assets/js/utils/icon-init.js"></script>
+    <script src="../assets/js/core/storage.js"></script>
+    <script src="../assets/js/utils/helpers.js"></script>
+    <script src="../assets/js/data/generator.js"></script>
+    <script src="../assets/js/modules/auth.js"></script>
+    <script src="../assets/js/components/ui.js"></script>
+
+    <script>
+        // Require authentication
+        Auth.requireAuth();
+
+        // Get current user
+        const currentUser = Auth.getCurrentUser();
+        document.getElementById('userName').textContent = currentUser.name;
+        document.getElementById('userRole').textContent = currentUser.role;
+        document.getElementById('userAvatar').textContent = Auth.getUserInitials();
+
+        // State
+        let currentDepartment = 'all';
+
+        // Load queue
+        function loadQueue() {
+            let queue = storage.getAll('queue');
+
+            // Filter by department
+            if (currentDepartment !== 'all') {
+                queue = queue.filter(q => q.department === currentDepartment);
+            }
+
+            // Filter only waiting patients
+            queue = queue.filter(q => q.status === 'Waiting');
+
+            // Sort by priority and time
+            queue.sort((a, b) => {
+                const priorityOrder = { 'Emergency': 1, 'Urgent': 2, 'Normal': 3 };
+                const priorityDiff = priorityOrder[a.priority] - priorityOrder[b.priority];
+                if (priorityDiff !== 0) return priorityDiff;
+                return new Date(a.addedAt) - new Date(b.addedAt);
+            });
+
+            updateStatistics(queue);
+            renderQueue(queue);
+        }
+
+        // Update statistics
+        function updateStatistics(queue) {
+            const allQueue = storage.getAll('queue').filter(q => q.status === 'Waiting');
+            const urgent = allQueue.filter(q => q.priority === 'Urgent' || q.priority === 'Emergency').length;
+
+            // Calculate average wait time
+            const now = new Date();
+            const waitTimes = allQueue.map(q => {
+                const addedAt = new Date(q.addedAt);
+                return (now - addedAt) / (1000 * 60); // minutes
+            });
+            const avgWait = waitTimes.length > 0
+                ? Math.round(waitTimes.reduce((a, b) => a + b, 0) / waitTimes.length)
+                : 0;
+
+            // Count served today
+            const today = new Date().toISOString().split('T')[0];
+            const servedToday = storage.getAll('queue')
+                .filter(q => q.status === 'Served' && q.addedAt.startsWith(today))
+                .length;
+
+            document.getElementById('totalWaiting').textContent = allQueue.length;
+            document.getElementById('urgentCases').textContent = urgent;
+            document.getElementById('avgWaitTime').textContent = `${avgWait} min`;
+            document.getElementById('servedToday').textContent = servedToday;
+        }
+
+        // Render queue
+        function renderQueue(queue) {
+            const queueList = document.getElementById('queueList');
+            const emptyState = document.getElementById('emptyState');
+
+            if (queue.length === 0) {
+                queueList.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            queueList.style.display = 'grid';
+            emptyState.style.display = 'none';
+
+            const html = queue.map(item => {
+                const waitTime = DateUtils.getTimeAgo(item.addedAt);
+                const isUrgent = item.priority === 'Urgent' || item.priority === 'Emergency';
+
+                return `
+          <div class="queue-item">
+            <div class="queue-number ${isUrgent ? 'urgent' : ''}">
+              ${item.queueNumber}
+            </div>
+            <div class="queue-info">
+              <div class="queue-patient-name">${item.patientName}</div>
+              <div class="queue-meta">
+                <span>🏥 ${item.department}</span>
+                <span>⏱️ ${waitTime}</span>
+                <span class="badge badge-${item.priority === 'Emergency' ? 'danger' : item.priority === 'Urgent' ? 'warning' : 'info'}">
+                  ${item.priority}
+                </span>
+              </div>
+            </div>
+            <div class="queue-actions">
+              <button class="btn btn-primary btn-sm" onclick="callPatient('${item.id}')">
+                Call Patient
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="removeFromQueue('${item.id}')">
+                Remove
+              </button>
+            </div>
+          </div>
+        `;
+            }).join('');
+
+            queueList.innerHTML = html;
+        }
+
+        // Department tab switching
+        document.querySelectorAll('.department-tab').forEach(tab => {
+            tab.addEventListener('click', function () {
+                document.querySelectorAll('.department-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentDepartment = this.dataset.department;
+                loadQueue();
+            });
+        });
+
+        // Show add to queue modal
+        function showAddToQueueModal() {
+            const patients = storage.getAll('patients');
+
+            Modal.show({
+                title: 'Add Patient to Queue',
+                size: 'lg',
+                content: `
+          <div class="form-group">
+            <label class="form-label">Select Patient</label>
+            <select class="form-select" id="modalPatientId">
+              <option value="">Choose a patient...</option>
+              ${patients.map(p => `
+                <option value="${p.id}">${p.firstName} ${p.lastName} (${p.id})</option>
+              `).join('')}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Department</label>
+            <select class="form-select" id="modalDepartment">
+              <option value="General">General</option>
+              <option value="Pediatrics">Pediatrics</option>
+              <option value="Dental">Dental</option>
+              <option value="Gynecology">Gynecology</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Priority</label>
+            <select class="form-select" id="modalPriority">
+              <option value="Normal">Normal</option>
+              <option value="Urgent">Urgent</option>
+              <option value="Emergency">Emergency</option>
+            </select>
+          </div>
+        `,
+                buttons: [
+                    {
+                        text: 'Cancel',
+                        action: 'cancel',
+                        className: 'btn-secondary',
+                        onClick: () => Modal.close(document.querySelector('.modal-backdrop'))
+                    },
+                    {
+                        text: 'Add to Queue',
+                        action: 'confirm',
+                        className: 'btn-primary',
+                        onClick: () => {
+                            const patientId = document.getElementById('modalPatientId').value;
+                            const department = document.getElementById('modalDepartment').value;
+                            const priority = document.getElementById('modalPriority').value;
+
+                            if (!patientId) {
+                                Toast.error('Please select a patient');
+                                return;
+                            }
+
+                            const patient = storage.getById('patients', patientId);
+                            const queue = storage.getAll('queue');
+                            const queueNumber = queue.length + 1;
+
+                            storage.add('queue', {
+                                id: `QUEUE-${Date.now()}`,
+                                queueNumber,
+                                patientId: patient.id,
+                                patientName: `${patient.firstName} ${patient.lastName}`,
+                                department,
+                                priority,
+                                status: 'Waiting',
+                                addedAt: new Date().toISOString(),
+                                addedBy: currentUser.id
+                            });
+
+                            Toast.success(`${patient.firstName} ${patient.lastName} added to queue`);
+                            Modal.close(document.querySelector('.modal-backdrop'));
+                            loadQueue();
+                        }
+                    }
+                ]
+            });
+        }
+
+        // Call patient
+        function callPatient(id) {
+            const item = storage.getById('queue', id);
+
+            Modal.confirm(
+                'Call Patient',
+                `Call ${item.patientName} for consultation?`,
+                () => {
+                    storage.update('queue', id, {
+                        status: 'InConsultation',
+                        calledAt: new Date().toISOString(),
+                        calledBy: currentUser.id
+                    });
+
+                    Toast.success(`${item.patientName} called for consultation`);
+                    loadQueue();
+                }
+            );
+        }
+
+        // Remove from queue
+        function removeFromQueue(id) {
+            const item = storage.getById('queue', id);
+
+            Modal.confirm(
+                'Remove from Queue',
+                `Remove ${item.patientName} from queue?`,
+                () => {
+                    storage.delete('queue', id);
+                    Toast.success('Patient removed from queue');
+                    loadQueue();
+                }
+            );
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadQueue, 30000);
+
+        // Initialize
+        loadQueue();
+    </script>
+</body>
+
+</html>

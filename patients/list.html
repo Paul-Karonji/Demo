@@ -1,0 +1,716 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMS - Patients</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../assets/css/reset.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/typography.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/utilities.css">
+    <link rel="stylesheet" href="../assets/css/animations.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+    <link rel="stylesheet" href="../assets/css/icons.css">
+
+    <style>
+        /* Icon Styles */
+        .sidebar-logo-icon svg,
+        .logo-icon svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .nav-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .search-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .btn svg,
+        .btn-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .empty-state-icon svg {
+            width: 48px;
+            height: 48px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: transform var(--transition-base);
+        }
+
+        .sidebar-header {
+            padding: var(--space-6);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .sidebar-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--text-xl);
+        }
+
+        .sidebar-logo-text {
+            font-size: var(--text-lg);
+            font-weight: var(--font-bold);
+            color: var(--gray-900);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: var(--space-4);
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            color: var(--gray-700);
+            font-weight: var(--font-medium);
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            margin-bottom: var(--space-1);
+        }
+
+        .nav-item:hover {
+            background: var(--gray-50);
+            color: var(--primary-500);
+        }
+
+        .nav-item.active {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-primary);
+        }
+
+        .nav-icon {
+            font-size: var(--text-xl);
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            padding: var(--space-4);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        /* Header Styles */
+        .header {
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            right: 0;
+            height: var(--header-height);
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-6);
+            z-index: 90;
+        }
+
+        .header-search {
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: var(--space-2) var(--space-4);
+            padding-left: var(--space-10);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            transition: all var(--transition-fast);
+            background: var(--gray-50);
+        }
+
+        .search-input:focus {
+            background: white;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: var(--space-4);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .header-user:hover {
+            background: var(--gray-50);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: var(--font-semibold);
+            font-size: var(--text-sm);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-size: var(--text-sm);
+            font-weight: var(--font-semibold);
+            color: var(--gray-900);
+        }
+
+        .user-role {
+            font-size: var(--text-xs);
+            color: var(--gray-500);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding-top: var(--header-height);
+            min-height: 100vh;
+            background: var(--gray-50);
+        }
+
+        .content-area {
+            padding: var(--space-6);
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: var(--space-3);
+            margin-bottom: var(--space-6);
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: var(--space-2) var(--space-4);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            background: white;
+            color: var(--gray-700);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary-500);
+            color: var(--primary-500);
+        }
+
+        .filter-btn.active {
+            background: var(--primary-500);
+            color: white;
+            border-color: var(--primary-500);
+        }
+
+        /* Patient Table */
+        .patient-row {
+            cursor: pointer;
+        }
+
+        .patient-row:hover {
+            background: var(--primary-50) !important;
+        }
+
+        .patient-photo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: var(--font-semibold);
+        }
+
+        @media (max-width: 1023px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+                box-shadow: var(--shadow-2xl);
+            }
+
+            .header {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .user-info {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon">⚕</div>
+                <div class="sidebar-logo-text">HMS</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="../dashboard.html" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="list.html" class="nav-item active">
+                <span class="nav-icon">👥</span>
+                <span>Patients</span>
+            </a>
+            <a href="queue.html" class="nav-item">
+                <span class="nav-icon">⏱️</span>
+                <span>Queue</span>
+            </a>
+            <a href="../pharmacy/inventory.html" class="nav-item">
+                <span class="nav-icon">💊</span>
+                <span>Pharmacy</span>
+            </a>
+            <a href="../laboratory/requests.html" class="nav-item">
+                <span class="nav-icon">🔬</span>
+                <span>Laboratory</span>
+            </a>
+            <a href="../billing/invoices.html" class="nav-item">
+                <span class="nav-icon">💰</span>
+                <span>Billing</span>
+            </a>
+            <a href="../reports/analytics.html" class="nav-item">
+                <span class="nav-icon">📈</span>
+                <span>Reports</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn btn-ghost w-full" onclick="Auth.logout()">
+                <span>🚪</span>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-search">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="search" class="search-input" id="searchInput"
+                    placeholder="Search by name, UPID, or phone...">
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <div class="header-user" id="userMenu">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div class="user-info">
+                    <div class="user-name" id="userName"></div>
+                    <div class="user-role" id="userRole"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-area">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Patients</h1>
+                    <div class="breadcrumb">
+                        <a href="../dashboard.html">Dashboard</a>
+                        <span class="breadcrumb-separator">›</span>
+                        <span class="breadcrumb-current">Patients</span>
+                    </div>
+                </div>
+                <div>
+                    <a href="register.html" class="btn btn-primary">
+                        <span>➕</span>
+                        <span>Register New Patient</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">All Patients</button>
+                <button class="filter-btn" data-filter="Male">Male</button>
+                <button class="filter-btn" data-filter="Female">Female</button>
+                <button class="filter-btn" data-filter="recent">Recent (7 days)</button>
+            </div>
+
+            <!-- Patient Table -->
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Photo</th>
+                            <th>UPID</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Blood Group</th>
+                            <th>Phone</th>
+                            <th>Last Visit</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patientTableBody">
+                        <!-- Patients will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <!-- Pagination will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="../assets/js/utils/icons.js"></script>
+    <script src="../assets/js/utils/icon-init.js"></script>
+    <script src="../assets/js/core/storage.js"></script>
+    <script src="../assets/js/utils/helpers.js"></script>
+    <script src="../assets/js/data/generator.js"></script>
+    <script src="../assets/js/modules/auth.js"></script>
+    <script src="../assets/js/components/ui.js"></script>
+
+    <script>
+        // Require authentication
+        Auth.requireAuth();
+
+        // Get current user
+        const currentUser = Auth.getCurrentUser();
+        document.getElementById('userName').textContent = currentUser.name;
+        document.getElementById('userRole').textContent = currentUser.role;
+        document.getElementById('userAvatar').textContent = Auth.getUserInitials();
+
+        // State
+        let allPatients = [];
+        let filteredPatients = [];
+        let currentPage = 1;
+        const perPage = 20;
+        let currentFilter = 'all';
+        let searchQuery = '';
+
+        // Load patients
+        function loadPatients() {
+            allPatients = storage.getAll('patients');
+            applyFilters();
+        }
+
+        // Apply filters
+        function applyFilters() {
+            let patients = [...allPatients];
+
+            // Apply gender/recent filter
+            if (currentFilter === 'Male' || currentFilter === 'Female') {
+                patients = patients.filter(p => p.gender === currentFilter);
+            } else if (currentFilter === 'recent') {
+                const sevenDaysAgo = new Date();
+                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                patients = patients.filter(p => new Date(p.registrationDate) >= sevenDaysAgo);
+            }
+
+            // Apply search
+            if (searchQuery) {
+                const query = searchQuery.toLowerCase();
+                patients = patients.filter(p =>
+                    p.firstName.toLowerCase().includes(query) ||
+                    p.lastName.toLowerCase().includes(query) ||
+                    p.id.toLowerCase().includes(query) ||
+                    p.phone.includes(query)
+                );
+            }
+
+            filteredPatients = patients;
+            currentPage = 1;
+            renderPatients();
+            renderPagination();
+        }
+
+        // Render patients
+        function renderPatients() {
+            const start = (currentPage - 1) * perPage;
+            const end = start + perPage;
+            const patientsToShow = filteredPatients.slice(start, end);
+
+            if (patientsToShow.length === 0) {
+                document.getElementById('patientTableBody').innerHTML = `
+          <tr>
+            <td colspan="10" class="text-center" style="padding: var(--space-12);">
+              <div class="empty-state">
+                <div class="empty-state-icon">👥</div>
+                <div class="empty-state-title">No patients found</div>
+                <div class="empty-state-message">Try adjusting your search or filters</div>
+              </div>
+            </td>
+          </tr>
+        `;
+                return;
+            }
+
+            const html = patientsToShow.map(patient => {
+                const age = DateUtils.calculateAge(patient.dateOfBirth);
+                const initials = StringUtils.getInitials(patient.firstName, patient.lastName);
+
+                return `
+          <tr class="patient-row" onclick="viewPatient('${patient.id}')">
+            <td>
+              <div class="patient-photo">${initials}</div>
+            </td>
+            <td><span class="monospace">${patient.id}</span></td>
+            <td><strong>${patient.firstName} ${patient.lastName}</strong></td>
+            <td>${age} years</td>
+            <td>${patient.gender}</td>
+            <td>${patient.bloodGroup}</td>
+            <td>${patient.phone}</td>
+            <td>${DateUtils.formatDate(patient.lastVisit, 'short')}</td>
+            <td><span class="badge badge-success">${patient.status}</span></td>
+            <td>
+              <div class="flex gap-2">
+                <button class="btn-icon" onclick="event.stopPropagation(); viewPatient('${patient.id}')" title="View">
+                  👁️
+                </button>
+                <button class="btn-icon" onclick="event.stopPropagation(); editPatient('${patient.id}')" title="Edit">
+                  ✏️
+                </button>
+                <button class="btn-icon" onclick="event.stopPropagation(); addToQueue('${patient.id}')" title="Add to Queue">
+                  ⏱️
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+            }).join('');
+
+            document.getElementById('patientTableBody').innerHTML = html;
+        }
+
+        // Render pagination
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredPatients.length / perPage);
+
+            if (totalPages <= 1) {
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+
+            let html = `
+        <button class="pagination-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">
+          ‹
+        </button>
+      `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    html += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">
+              ${i}
+            </button>
+          `;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    html += `<span style="padding: 0 var(--space-2);">...</span>`;
+                }
+            }
+
+            html += `
+        <button class="pagination-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">
+          ›
+        </button>
+      `;
+
+            document.getElementById('pagination').innerHTML = html;
+        }
+
+        // Change page
+        function changePage(page) {
+            currentPage = page;
+            renderPatients();
+            renderPagination();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = this.dataset.filter;
+                applyFilters();
+            });
+        });
+
+        // Search input
+        document.getElementById('searchInput').addEventListener('input', debounce(function (e) {
+            searchQuery = e.target.value.trim();
+            applyFilters();
+        }, 300));
+
+        // View patient
+        function viewPatient(id) {
+            window.location.href = `details.html?id=${id}`;
+        }
+
+        // Edit patient
+        function editPatient(id) {
+            window.location.href = `register.html?id=${id}`;
+        }
+
+        // Add to queue
+        function addToQueue(id) {
+            const patient = storage.getById('patients', id);
+
+            Modal.show({
+                title: 'Add to Queue',
+                content: `
+          <p>Add <strong>${patient.firstName} ${patient.lastName}</strong> to queue?</p>
+          <div class="form-group" style="margin-top: var(--space-4);">
+            <label class="form-label">Department</label>
+            <select class="form-select" id="queueDepartment">
+              <option value="General">General</option>
+              <option value="Pediatrics">Pediatrics</option>
+              <option value="Dental">Dental</option>
+              <option value="Gynecology">Gynecology</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Priority</label>
+            <select class="form-select" id="queuePriority">
+              <option value="Normal">Normal</option>
+              <option value="Urgent">Urgent</option>
+              <option value="Emergency">Emergency</option>
+            </select>
+          </div>
+        `,
+                buttons: [
+                    {
+                        text: 'Cancel',
+                        action: 'cancel',
+                        className: 'btn-secondary',
+                        onClick: () => Modal.close(document.querySelector('.modal-backdrop'))
+                    },
+                    {
+                        text: 'Add to Queue',
+                        action: 'confirm',
+                        className: 'btn-primary',
+                        onClick: () => {
+                            const department = document.getElementById('queueDepartment').value;
+                            const priority = document.getElementById('queuePriority').value;
+
+                            const queue = storage.getAll('queue');
+                            const queueNumber = queue.length + 1;
+
+                            storage.add('queue', {
+                                id: `QUEUE-${Date.now()}`,
+                                queueNumber,
+                                patientId: patient.id,
+                                patientName: `${patient.firstName} ${patient.lastName}`,
+                                department,
+                                priority,
+                                status: 'Waiting',
+                                addedAt: new Date().toISOString(),
+                                addedBy: currentUser.id
+                            });
+
+                            Toast.success(`${patient.firstName} ${patient.lastName} added to ${department} queue`);
+                            Modal.close(document.querySelector('.modal-backdrop'));
+                        }
+                    }
+                ]
+            });
+        }
+
+        // Initialize
+        loadPatients();
+    </script>
+</body>
+
+</html>

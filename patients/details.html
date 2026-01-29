@@ -1,0 +1,717 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMS - Patient Details</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../assets/css/reset.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/typography.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/utilities.css">
+    <link rel="stylesheet" href="../assets/css/animations.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+    <link rel="stylesheet" href="../assets/css/icons.css">
+
+    <style>
+        /* Include common styles */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: var(--space-6);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .sidebar-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--text-xl);
+        }
+
+        .sidebar-logo-text {
+            font-size: var(--text-lg);
+            font-weight: var(--font-bold);
+            color: var(--gray-900);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: var(--space-4);
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            color: var(--gray-700);
+            font-weight: var(--font-medium);
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            margin-bottom: var(--space-1);
+        }
+
+        .nav-item:hover {
+            background: var(--gray-50);
+            color: var(--primary-500);
+        }
+
+        .nav-item.active {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .nav-icon {
+            font-size: var(--text-xl);
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            padding: var(--space-4);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            right: 0;
+            height: var(--header-height);
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-6);
+            z-index: 90;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: var(--font-semibold);
+            font-size: var(--text-sm);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding-top: var(--header-height);
+            min-height: 100vh;
+            background: var(--gray-50);
+        }
+
+        .content-area {
+            padding: var(--space-6);
+        }
+
+        /* Patient Details Specific */
+        .patient-header {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            margin-bottom: var(--space-6);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            gap: var(--space-6);
+            align-items: start;
+        }
+
+        .patient-photo-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--text-4xl);
+            font-weight: var(--font-bold);
+            flex-shrink: 0;
+        }
+
+        .patient-header-info {
+            flex: 1;
+        }
+
+        .patient-name {
+            font-size: var(--text-3xl);
+            font-weight: var(--font-bold);
+            color: var(--gray-900);
+            margin-bottom: var(--space-2);
+        }
+
+        .patient-meta {
+            display: flex;
+            gap: var(--space-6);
+            flex-wrap: wrap;
+            margin-bottom: var(--space-4);
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-1);
+        }
+
+        .meta-label {
+            font-size: var(--text-xs);
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .meta-value {
+            font-size: var(--text-base);
+            font-weight: var(--font-semibold);
+            color: var(--gray-900);
+        }
+
+        .patient-actions {
+            display: flex;
+            gap: var(--space-3);
+        }
+
+        .tabs {
+            display: flex;
+            gap: var(--space-2);
+            margin-bottom: var(--space-6);
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .tab {
+            padding: var(--space-3) var(--space-6);
+            font-weight: var(--font-medium);
+            color: var(--gray-600);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all var(--transition-fast);
+        }
+
+        .tab:hover {
+            color: var(--primary-500);
+        }
+
+        .tab.active {
+            color: var(--primary-500);
+            border-bottom-color: var(--primary-500);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-6);
+        }
+
+        .info-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .info-section-title {
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            color: var(--gray-900);
+            margin-bottom: var(--space-4);
+            padding-bottom: var(--space-3);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--space-3) 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--gray-600);
+            font-size: var(--text-sm);
+        }
+
+        .info-value {
+            color: var(--gray-900);
+            font-weight: var(--font-medium);
+            font-size: var(--text-sm);
+        }
+
+        @media (max-width: 1023px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .header {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .patient-header {
+                flex-direction: column;
+                text-align: center;
+                align-items: center;
+            }
+
+            .patient-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="logo-icon"></div>
+                <div class="sidebar-logo-text">HMS</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="../dashboard.html" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="list.html" class="nav-item active">
+                <span class="nav-icon">👥</span>
+                <span>Patients</span>
+            </a>
+            <a href="queue.html" class="nav-item">
+                <span class="nav-icon">⏱️</span>
+                <span>Queue</span>
+            </a>
+            <a href="../pharmacy/inventory.html" class="nav-item">
+                <span class="nav-icon">💊</span>
+                <span>Pharmacy</span>
+            </a>
+            <a href="../laboratory/requests.html" class="nav-item">
+                <span class="nav-icon">🔬</span>
+                <span>Laboratory</span>
+            </a>
+            <a href="../billing/invoices.html" class="nav-item">
+                <span class="nav-icon">💰</span>
+                <span>Billing</span>
+            </a>
+            <a href="../reports/analytics.html" class="nav-item">
+                <span class="nav-icon">📈</span>
+                <span>Reports</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn btn-ghost w-full" onclick="Auth.logout()">
+                <span>🚪</span>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-actions">
+            <div class="user-avatar" id="userAvatar"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-area">
+            <!-- Patient Header -->
+            <div class="patient-header">
+                <div class="patient-photo-large" id="patientPhoto"></div>
+                <div class="patient-header-info">
+                    <h1 class="patient-name" id="patientName"></h1>
+                    <div class="patient-meta" id="patientMeta"></div>
+                    <div class="patient-actions">
+                        <button class="btn btn-primary" onclick="editPatient()">
+                            <span>✏️</span>
+                            <span>Edit Patient</span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="addToQueue()">
+                            <span>⏱️</span>
+                            <span>Add to Queue</span>
+                        </button>
+                        <a href="list.html" class="btn btn-ghost">
+                            <span>←</span>
+                            <span>Back to List</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab active" data-tab="overview">Overview</div>
+                <div class="tab" data-tab="medical">Medical History</div>
+                <div class="tab" data-tab="visits">Visits</div>
+                <div class="tab" data-tab="billing">Billing</div>
+            </div>
+
+            <!-- Tab Content: Overview -->
+            <div class="tab-content active" id="overview">
+                <div class="info-grid" id="overviewContent"></div>
+            </div>
+
+            <!-- Tab Content: Medical History -->
+            <div class="tab-content" id="medical">
+                <div class="info-section">
+                    <h3 class="info-section-title">Medical Information</h3>
+                    <div id="medicalContent"></div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Visits -->
+            <div class="tab-content" id="visits">
+                <div class="info-section">
+                    <h3 class="info-section-title">Visit History</h3>
+                    <div id="visitsContent"></div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Billing -->
+            <div class="tab-content" id="billing">
+                <div class="info-section">
+                    <h3 class="info-section-title">Billing History</h3>
+                    <div id="billingContent"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <!-- Scripts -->
+    <script src="../assets/js/utils/icons.js"></script>
+    <script src="../assets/js/utils/icon-init.js"></script>
+    <script src="../assets/js/core/storage.js"></script>
+    <script src="../assets/js/utils/helpers.js"></script>
+    <script src="../assets/js/data/generator.js"></script>
+    <script src="../assets/js/modules/auth.js"></script>
+    <script src="../assets/js/components/ui.js"></script>
+
+    <script>
+        // Require authentication
+        Auth.requireAuth();
+
+        // Get current user
+        const currentUser = Auth.getCurrentUser();
+        document.getElementById('userAvatar').textContent = Auth.getUserInitials();
+
+        // Get patient ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const patientId = urlParams.get('id');
+
+        if (!patientId) {
+            Toast.error('Patient ID not provided');
+            window.location.href = 'list.html';
+        }
+
+        // Load patient data
+        const patient = storage.getById('patients', patientId);
+
+        if (!patient) {
+            Toast.error('Patient not found');
+            window.location.href = 'list.html';
+        }
+
+        // Populate patient header
+        const initials = StringUtils.getInitials(patient.firstName, patient.lastName);
+        document.getElementById('patientPhoto').textContent = initials;
+        document.getElementById('patientName').textContent = `${patient.firstName} ${patient.lastName}`;
+
+        const age = DateUtils.calculateAge(patient.dateOfBirth);
+        document.getElementById('patientMeta').innerHTML = `
+      <div class="meta-item">
+        <div class="meta-label">UPID</div>
+        <div class="meta-value monospace">${patient.id}</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Age</div>
+        <div class="meta-value">${age} years</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Gender</div>
+        <div class="meta-value">${patient.gender}</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Blood Group</div>
+        <div class="meta-value">${patient.bloodGroup}</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Status</div>
+        <div class="meta-value"><span class="badge badge-success">${patient.status}</span></div>
+      </div>
+    `;
+
+        // Populate overview tab
+        document.getElementById('overviewContent').innerHTML = `
+      <div class="info-section">
+        <h3 class="info-section-title">Personal Information</h3>
+        <div class="info-row">
+          <span class="info-label">Full Name</span>
+          <span class="info-value">${patient.firstName} ${patient.lastName}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Date of Birth</span>
+          <span class="info-value">${DateUtils.formatDate(patient.dateOfBirth, 'long')}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Gender</span>
+          <span class="info-value">${patient.gender}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Blood Group</span>
+          <span class="info-value">${patient.bloodGroup}</span>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <h3 class="info-section-title">Contact Information</h3>
+        <div class="info-row">
+          <span class="info-label">Phone</span>
+          <span class="info-value">${patient.phone}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Email</span>
+          <span class="info-value">${patient.email || 'N/A'}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Address</span>
+          <span class="info-value">${patient.address.street}, ${patient.address.city}</span>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <h3 class="info-section-title">Emergency Contact</h3>
+        <div class="info-row">
+          <span class="info-label">Name</span>
+          <span class="info-value">${patient.emergencyContact.name}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Relationship</span>
+          <span class="info-value">${patient.emergencyContact.relationship}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Phone</span>
+          <span class="info-value">${patient.emergencyContact.phone}</span>
+        </div>
+      </div>
+
+      ${patient.insurance ? `
+        <div class="info-section">
+          <h3 class="info-section-title">Insurance</h3>
+          <div class="info-row">
+            <span class="info-label">Provider</span>
+            <span class="info-value">${patient.insurance.provider}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Policy Number</span>
+            <span class="info-value">${patient.insurance.policyNumber}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Expiry Date</span>
+            <span class="info-value">${DateUtils.formatDate(patient.insurance.expiryDate, 'short')}</span>
+          </div>
+        </div>
+      ` : ''}
+    `;
+
+        // Populate medical tab
+        document.getElementById('medicalContent').innerHTML = `
+      <div class="info-row">
+        <span class="info-label">Allergies</span>
+        <span class="info-value">${patient.allergies.join(', ') || 'None'}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Chronic Conditions</span>
+        <span class="info-value">${patient.chronicConditions.join(', ') || 'None'}</span>
+      </div>
+    `;
+
+        // Load visits
+        const visits = storage.search('visits', { patientId: patient.id });
+        if (visits.length > 0) {
+            document.getElementById('visitsContent').innerHTML = visits.map(visit => `
+        <div class="info-row">
+          <div>
+            <div class="info-value">${visit.diagnosis}</div>
+            <div class="info-label">${DateUtils.formatDate(visit.visitDate, 'datetime')}</div>
+          </div>
+          <span class="badge badge-success">${visit.status}</span>
+        </div>
+      `).join('');
+        } else {
+            document.getElementById('visitsContent').innerHTML = '<p class="text-gray-500">No visits recorded</p>';
+        }
+
+        // Load bills
+        const bills = storage.search('bills', { patientId: patient.id });
+        if (bills.length > 0) {
+            document.getElementById('billingContent').innerHTML = bills.map(bill => `
+        <div class="info-row">
+          <div>
+            <div class="info-value">${bill.id}</div>
+            <div class="info-label">${DateUtils.formatDate(bill.billDate, 'short')}</div>
+          </div>
+          <div style="text-align: right;">
+            <div class="info-value">${NumberUtils.formatCurrency(bill.total)}</div>
+            <span class="badge badge-${bill.status === 'Paid' ? 'success' : bill.status === 'PartiallyPaid' ? 'warning' : 'danger'}">
+              ${bill.status}
+            </span>
+          </div>
+        </div>
+      `).join('');
+        } else {
+            document.getElementById('billingContent').innerHTML = '<p class="text-gray-500">No bills recorded</p>';
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function () {
+                const tabName = this.dataset.tab;
+
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                this.classList.add('active');
+                document.getElementById(tabName).classList.add('active');
+            });
+        });
+
+        // Edit patient
+        function editPatient() {
+            window.location.href = `register.html?id=${patient.id}`;
+        }
+
+        // Add to queue
+        function addToQueue() {
+            Modal.show({
+                title: 'Add to Queue',
+                content: `
+          <p>Add <strong>${patient.firstName} ${patient.lastName}</strong> to queue?</p>
+          <div class="form-group" style="margin-top: var(--space-4);">
+            <label class="form-label">Department</label>
+            <select class="form-select" id="queueDepartment">
+              <option value="General">General</option>
+              <option value="Pediatrics">Pediatrics</option>
+              <option value="Dental">Dental</option>
+              <option value="Gynecology">Gynecology</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Priority</label>
+            <select class="form-select" id="queuePriority">
+              <option value="Normal">Normal</option>
+              <option value="Urgent">Urgent</option>
+              <option value="Emergency">Emergency</option>
+            </select>
+          </div>
+        `,
+                buttons: [
+                    {
+                        text: 'Cancel',
+                        action: 'cancel',
+                        className: 'btn-secondary',
+                        onClick: () => Modal.close(document.querySelector('.modal-backdrop'))
+                    },
+                    {
+                        text: 'Add to Queue',
+                        action: 'confirm',
+                        className: 'btn-primary',
+                        onClick: () => {
+                            const department = document.getElementById('queueDepartment').value;
+                            const priority = document.getElementById('queuePriority').value;
+
+                            const queue = storage.getAll('queue');
+                            const queueNumber = queue.length + 1;
+
+                            storage.add('queue', {
+                                id: `QUEUE-${Date.now()}`,
+                                queueNumber,
+                                patientId: patient.id,
+                                patientName: `${patient.firstName} ${patient.lastName}`,
+                                department,
+                                priority,
+                                status: 'Waiting',
+                                addedAt: new Date().toISOString(),
+                                addedBy: currentUser.id
+                            });
+
+                            Toast.success(`${patient.firstName} ${patient.lastName} added to ${department} queue`);
+                            Modal.close(document.querySelector('.modal-backdrop'));
+                        }
+                    }
+                ]
+            });
+        }
+    </script>
+</body>
+
+</html>

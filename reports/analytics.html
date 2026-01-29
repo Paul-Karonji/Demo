@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMS - Coming Soon</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/reset.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/typography.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/utilities.css">
+    <link rel="stylesheet" href="../assets/css/animations.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+    <link rel="stylesheet" href="../assets/css/icons.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+        }
+
+        .coming-soon {
+            text-align: center;
+            color: white;
+            max-width: 600px;
+            padding: var(--space-8);
+        }
+
+        .coming-soon-icon {
+            font-size: 80px;
+            margin-bottom: var(--space-6);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .coming-soon-title {
+            font-size: var(--text-4xl);
+            font-weight: var(--font-bold);
+            margin-bottom: var(--space-4);
+        }
+
+        .coming-soon-message {
+            font-size: var(--text-lg);
+            margin-bottom: var(--space-8);
+            opacity: 0.9;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="coming-soon">
+        <div class="coming-soon-icon">🚧</div>
+        <h1 class="coming-soon-title">Coming Soon</h1>
+        <p class="coming-soon-message">This module is currently under development and will be available in the next
+            update.</p>
+        <a href="../dashboard.html" class="btn" style="background: white; color: var(--primary-500);">
+            <span>←</span>
+            <span>Back to Dashboard</span>
+        </a>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,87 @@
+<!-- Modern Sidebar Navigation Template -->
+<!-- Include icons.js before using this template -->
+
+<style>
+    /* Icon styles for navigation */
+    .nav-icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .sidebar-logo-icon svg {
+        width: 28px;
+        height: 28px;
+    }
+</style>
+
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">
+            <div class="sidebar-logo-icon" id="sidebarLogoIcon"></div>
+            <div class="sidebar-logo-text">HMS</div>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <a href="../dashboard.html" class="nav-item" data-page="dashboard">
+            <span class="nav-icon" data-icon="home"></span>
+            <span>Dashboard</span>
+        </a>
+        <a href="../patients/list.html" class="nav-item" data-page="patients">
+            <span class="nav-icon" data-icon="users"></span>
+            <span>Patients</span>
+        </a>
+        <a href="../patients/queue.html" class="nav-item" data-page="queue">
+            <span class="nav-icon" data-icon="clock"></span>
+            <span>Queue</span>
+        </a>
+        <a href="../pharmacy/inventory.html" class="nav-item" data-page="pharmacy">
+            <span class="nav-icon" data-icon="pill"></span>
+            <span>Pharmacy</span>
+        </a>
+        <a href="../laboratory/requests.html" class="nav-item" data-page="laboratory">
+            <span class="nav-icon" data-icon="flask"></span>
+            <span>Laboratory</span>
+        </a>
+        <a href="../billing/invoices.html" class="nav-item" data-page="billing">
+            <span class="nav-icon" data-icon="credit-card"></span>
+            <span>Billing</span>
+        </a>
+        <a href="../reports/analytics.html" class="nav-item" data-page="reports">
+            <span class="nav-icon" data-icon="bar-chart"></span>
+            <span>Reports</span>
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <button class="btn btn-ghost w-full" onclick="Auth.logout()">
+            <span class="nav-icon" data-icon="log-out"></span>
+            <span>Logout</span>
+        </button>
+    </div>
+</aside>
+
+<script>
+    // Initialize sidebar icons
+    (function () {
+        // Logo icon
+        const logoIcon = document.getElementById('sidebarLogoIcon');
+        if (logoIcon) {
+            logoIcon.appendChild(Icons.create('heart-pulse', '', 28));
+        }
+
+        // Navigation icons
+        document.querySelectorAll('.nav-icon[data-icon]').forEach(icon => {
+            const iconName = icon.dataset.icon;
+            icon.appendChild(Icons.create(iconName, '', 20));
+        });
+
+        // Set active nav item based on current page
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-item').forEach(item => {
+            if (currentPath.includes(item.getAttribute('href'))) {
+                item.classList.add('active');
+            }
+        });
+    })();
+</script>

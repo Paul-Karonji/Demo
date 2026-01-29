@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Hospital Management System - Secure Login">
+  <title>HMS - Login</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="assets/css/reset.css">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/typography.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/utilities.css">
+  <link rel="stylesheet" href="assets/css/animations.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+
+  <style>
+    /* Icon styles */
+    .icon {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .input-icon svg,
+    .password-toggle svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .logo-icon svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .demo-role-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+  </style>
+
+  <style>
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gradient-primary);
+      padding: var(--space-4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-page::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      filter: blur(80px);
+    }
+
+    .login-page::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -10%;
+      width: 400px;
+      height: 400px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      filter: blur(80px);
+    }
+
+    .medical-pattern {
+      position: absolute;
+      font-size: 100px;
+      opacity: 0.05;
+      color: white;
+      pointer-events: none;
+    }
+
+    .medical-pattern:nth-child(1) {
+      top: 10%;
+      left: 10%;
+    }
+
+    .medical-pattern:nth-child(2) {
+      top: 20%;
+      right: 15%;
+    }
+
+    .medical-pattern:nth-child(3) {
+      bottom: 15%;
+      left: 20%;
+    }
+
+    .medical-pattern:nth-child(4) {
+      bottom: 10%;
+      right: 10%;
+    }
+
+    .login-card {
+      background: white;
+      border-radius: var(--radius-2xl);
+      padding: var(--space-10);
+      box-shadow: var(--shadow-2xl);
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: var(--space-8);
+    }
+
+    .logo-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--gradient-primary);
+      border-radius: var(--radius-xl);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-3xl);
+      color: white;
+      margin-bottom: var(--space-4);
+    }
+
+    .login-title {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-bold);
+      color: var(--gray-900);
+      margin-bottom: var(--space-2);
+    }
+
+    .login-subtitle {
+      font-size: var(--text-sm);
+      color: var(--gray-500);
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: var(--space-4);
+    }
+
+    .input-icon {
+      position: absolute;
+      left: var(--space-4);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-400);
+      font-size: var(--text-lg);
+    }
+
+    .input-with-icon {
+      padding-left: var(--space-12);
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: var(--space-4);
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--gray-400);
+      font-size: var(--text-lg);
+      transition: color var(--transition-fast);
+    }
+
+    .password-toggle:hover {
+      color: var(--gray-700);
+    }
+
+    .remember-forgot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-6);
+      font-size: var(--text-sm);
+    }
+
+    .forgot-link {
+      color: var(--primary-500);
+      font-weight: var(--font-medium);
+      transition: color var(--transition-fast);
+    }
+
+    .forgot-link:hover {
+      color: var(--primary-700);
+    }
+
+    .demo-credentials {
+      margin-top: var(--space-8);
+      padding-top: var(--space-6);
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .demo-title {
+      font-size: var(--text-sm);
+      font-weight: var(--font-semibold);
+      color: var(--gray-700);
+      text-align: center;
+      margin-bottom: var(--space-4);
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-3);
+    }
+
+    .demo-user {
+      background: var(--gray-50);
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      border: 2px solid transparent;
+    }
+
+    .demo-user:hover {
+      background: var(--primary-50);
+      border-color: var(--primary-200);
+      transform: translateY(-2px);
+    }
+
+    .demo-role {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      font-weight: var(--font-semibold);
+      color: var(--gray-900);
+      margin-bottom: var(--space-1);
+    }
+
+    .demo-role-icon {
+      font-size: var(--text-base);
+    }
+
+    .demo-credentials-text {
+      font-size: var(--text-xs);
+      color: var(--gray-500);
+    }
+
+    @media (max-width: 639px) {
+      .login-card {
+        padding: var(--space-6);
+      }
+
+      .demo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="login-page">
+    <!-- Medical Pattern Background -->
+    <div class="medical-pattern">+</div>
+    <div class="medical-pattern">+</div>
+    <div class="medical-pattern">+</div>
+    <div class="medical-pattern">+</div>
+
+    <!-- Login Card -->
+    <div class="login-card animate-scaleIn">
+      <div class="login-logo">
+        <div class="logo-icon" id="logoIcon"></div>
+        <h1 class="login-title">Hospital Management System</h1>
+        <p class="login-subtitle">Sign in to access your dashboard</p>
+      </div>
+
+      <form id="loginForm">
+        <div class="input-group">
+          <span class="input-icon" id="userIcon"></span>
+          <input type="text" id="username" name="username" class="form-input input-with-icon" placeholder="Username"
+            required autocomplete="username">
+        </div>
+
+        <div class="input-group">
+          <span class="input-icon" id="lockIcon"></span>
+          <input type="password" id="password" name="password" class="form-input input-with-icon" placeholder="Password"
+            required autocomplete="current-password">
+          <span class="password-toggle" id="togglePassword"></span>
+        </div>
+
+        <div class="remember-forgot">
+          <label class="form-check">
+            <input type="checkbox" id="remember" name="remember">
+            <span>Remember me</span>
+          </label>
+          <a href="#" class="forgot-link">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full btn-lg">
+          Sign In
+        </button>
+      </form>
+
+      <!-- Demo Credentials -->
+      <div class="demo-credentials">
+        <p class="demo-title">Demo Credentials</p>
+        <div class="demo-grid">
+          <div class="demo-user" data-username="admin" data-password="admin123">
+            <div class="demo-role">
+              <span class="demo-role-icon" data-icon="settings"></span>
+              <span>Admin</span>
+            </div>
+            <p class="demo-credentials-text">Username: <strong>admin</strong></p>
+            <p class="demo-credentials-text">Password: <strong>admin123</strong></p>
+          </div>
+
+          <div class="demo-user" data-username="doctor" data-password="doctor123">
+            <div class="demo-role">
+              <span class="demo-role-icon" data-icon="stethoscope"></span>
+              <span>Doctor</span>
+            </div>
+            <p class="demo-credentials-text">Username: <strong>doctor</strong></p>
+            <p class="demo-credentials-text">Password: <strong>doctor123</strong></p>
+          </div>
+
+          <div class="demo-user" data-username="nurse" data-password="nurse123">
+            <div class="demo-role">
+              <span class="demo-role-icon" data-icon="user-nurse"></span>
+              <span>Nurse</span>
+            </div>
+            <p class="demo-credentials-text">Username: <strong>nurse</strong></p>
+            <p class="demo-credentials-text">Password: <strong>nurse123</strong></p>
+          </div>
+
+          <div class="demo-user" data-username="pharmacist" data-password="pharma123">
+            <div class="demo-role">
+              <span class="demo-role-icon" data-icon="pill"></span>
+              <span>Pharmacist</span>
+            </div>
+            <p class="demo-credentials-text">Username: <strong>pharmacist</strong></p>
+            <p class="demo-credentials-text">Password: <strong>pharma123</strong></p>
+          </div>
+
+          <div class="demo-user" data-username="lab" data-password="lab123">
+            <div class="demo-role">
+              <span class="demo-role-icon" data-icon="flask"></span>
+              <span>Lab Tech</span>
+            </div>
+            <p class="demo-credentials-text">Username: <strong>lab</strong></p>
+            <p class="demo-credentials-text">Password: <strong>lab123</strong></p>
+          </div>
+
+          <div class="demo-user" data-username="reception" data-password="reception123">
+            <div class="demo-role">
+              <span class="demo-role-icon" data-icon="clipboard"></span>
+              <span>Receptionist</span>
+            </div>
+            <p class="demo-credentials-text">Username: <strong>reception</strong></p>
+            <p class="demo-credentials-text">Password: <strong>reception123</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="assets/js/utils/icons.js"></script>
+  <script src="assets/js/core/storage.js"></script>
+  <script src="assets/js/utils/helpers.js"></script>
+  <script src="assets/js/data/generator.js"></script>
+  <script src="assets/js/modules/auth.js"></script>
+  <script src="assets/js/components/ui.js"></script>
+
+  <script>
+    // Initialize icons
+    document.getElementById('logoIcon').appendChild(Icons.create('heart-pulse', '', 32));
+    document.getElementById('userIcon').appendChild(Icons.create('user'));
+    document.getElementById('lockIcon').appendChild(Icons.create('lock'));
+    document.getElementById('togglePassword').appendChild(Icons.create('eye'));
+
+    // Initialize demo role icons
+    document.querySelectorAll('.demo-role-icon').forEach(icon => {
+      const iconName = icon.dataset.icon;
+      icon.appendChild(Icons.create(iconName, '', 18));
+    });
+
+    // Initialize demo data on first load
+    if (!demoData.isInitialized()) {
+      console.log('Initializing demo data...');
+      demoData.generateAll();
+    }
+
+    // Check if already logged in
+    if (Auth.isAuthenticated()) {
+      window.location.href = 'dashboard.html';
+    }
+
+    // Password toggle
+    document.getElementById('togglePassword').addEventListener('click', function () {
+      const passwordInput = document.getElementById('password');
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = type;
+      this.innerHTML = '';
+      this.appendChild(Icons.create(type === 'password' ? 'eye' : 'eye-off'));
+    });
+
+    // Demo user quick login
+    document.querySelectorAll('.demo-user').forEach(user => {
+      user.addEventListener('click', function () {
+        const username = this.dataset.username;
+        const password = this.dataset.password;
+        document.getElementById('username').value = username;
+        document.getElementById('password').value = password;
+      });
+    });
+
+    // Login form submission
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!username || !password) {
+        Toast.error('Please enter username and password');
+        return;
+      }
+
+      Loading.show('Signing in...');
+
+      // Simulate network delay for realistic feel
+      setTimeout(() => {
+        const result = Auth.login(username, password);
+        Loading.hide();
+
+        if (result.success) {
+          Toast.success(`Welcome back, ${result.user.name}!`);
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 500);
+        } else {
+          Toast.error(result.message);
+          // Shake animation on error
+          const form = document.getElementById('loginForm');
+          form.style.animation = 'shake 500ms';
+          setTimeout(() => {
+            form.style.animation = '';
+          }, 500);
+        }
+      }, 800);
+    });
+
+    // Forgot password (demo only)
+    document.querySelector('.forgot-link').addEventListener('click', function (e) {
+      e.preventDefault();
+      Toast.info('This is a demo. Use the credentials shown below to login.');
+    });
+  </script>
+</body>
+
+</html>

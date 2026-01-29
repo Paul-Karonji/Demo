@@ -1,0 +1,130 @@
+/* Design Tokens - CSS Variables */
+:root {
+    /* Primary Colors (Modern Blue-Violet) */
+    --primary-50: #F0F4FF;
+    --primary-100: #E0E8FF;
+    --primary-200: #C7D7FE;
+    --primary-300: #A4BCFD;
+    --primary-400: #8098F9;
+    --primary-500: #6172F3;
+    --primary-600: #4E5CE6;
+    --primary-700: #3E4CD3;
+    --primary-800: #3142AB;
+    --primary-900: #2D3A8C;
+
+    /* Accent Colors (Modern & Vibrant) */
+    --success-light: #D1FADF;
+    --success: #12B76A;
+    --success-dark: #0D9F5C;
+
+    --warning-light: #FEF0C7;
+    --warning: #F79009;
+    --warning-dark: #DC6803;
+
+    --danger-light: #FEE4E2;
+    --danger: #F04438;
+    --danger-dark: #D92D20;
+
+    --info-light: #D1E9FF;
+    --info: #2E90FA;
+    --info-dark: #1570EF;
+
+    /* Neutral Colors (Refined Grays) */
+    --gray-50: #FAFAFA;
+    --gray-100: #F5F5F6;
+    --gray-200: #ECECED;
+    --gray-300: #CECFD2;
+    --gray-400: #94969C;
+    --gray-500: #85888E;
+    --gray-600: #61646C;
+    --gray-700: #333741;
+    --gray-800: #1F242F;
+    --gray-900: #0C111D;
+
+    /* Modern Gradients */
+    --gradient-primary: linear-gradient(135deg, #6172F3 0%, #4E5CE6 50%, #3E4CD3 100%);
+    --gradient-success: linear-gradient(135deg, #12B76A 0%, #0D9F5C 100%);
+    --gradient-danger: linear-gradient(135deg, #F04438 0%, #D92D20 100%);
+    --gradient-warning: linear-gradient(135deg, #F79009 0%, #DC6803 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
+    --gradient-subtle: linear-gradient(180deg, #FAFAFA 0%, #F5F5F6 100%);
+
+    /* Typography */
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-heading: 'Outfit', 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+    /* Font Sizes (Fluid Typography) */
+    --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+    --text-sm: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+    --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+    --text-lg: clamp(1.125rem, 1.05rem + 0.375vw, 1.25rem);
+    --text-xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+    --text-2xl: clamp(1.5rem, 1.35rem + 0.75vw, 1.875rem);
+    --text-3xl: clamp(1.875rem, 1.65rem + 1.125vw, 2.25rem);
+    --text-4xl: clamp(2.25rem, 1.95rem + 1.5vw, 3rem);
+
+    /* Font Weights */
+    --font-light: 300;
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+    --font-extrabold: 800;
+
+    /* Line Heights */
+    --leading-tight: 1.25;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.75;
+
+    /* Spacing */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --space-20: 5rem;
+
+    /* Border Radius */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-2xl: 1.5rem;
+    --radius-full: 9999px;
+
+    /* Shadows (Modern & Refined) */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.06);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.06);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.20);
+    --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.04);
+
+    /* Colored Shadows (Softer) */
+    --shadow-primary: 0 8px 20px -4px rgba(97, 114, 243, 0.25);
+    --shadow-success: 0 8px 20px -4px rgba(18, 183, 106, 0.25);
+    --shadow-danger: 0 8px 20px -4px rgba(240, 68, 56, 0.25);
+
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Easing Functions */
+    --ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    /* Layout */
+    --sidebar-width: 240px;
+    --header-height: 64px;
+    --container-max-width: 1280px;
+}

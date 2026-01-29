@@ -1,0 +1,648 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMS - Prescriptions</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../assets/css/reset.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/typography.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/utilities.css">
+    <link rel="stylesheet" href="../assets/css/animations.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+    <link rel="stylesheet" href="../assets/css/icons.css">
+
+    <style>
+        /* Common styles (same as inventory.html) */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: var(--space-6);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .sidebar-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--text-xl);
+        }
+
+        .sidebar-logo-text {
+            font-size: var(--text-lg);
+            font-weight: var(--font-bold);
+            color: var(--gray-900);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: var(--space-4);
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            color: var(--gray-700);
+            font-weight: var(--font-medium);
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            margin-bottom: var(--space-1);
+        }
+
+        .nav-item:hover {
+            background: var(--gray-50);
+            color: var(--primary-500);
+        }
+
+        .nav-item.active {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .nav-icon {
+            font-size: var(--text-xl);
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            padding: var(--space-4);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            right: 0;
+            height: var(--header-height);
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-6);
+            z-index: 90;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: var(--font-semibold);
+            font-size: var(--text-sm);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding-top: var(--header-height);
+            min-height: 100vh;
+            background: var(--gray-50);
+        }
+
+        .content-area {
+            padding: var(--space-6);
+        }
+
+        /* Prescription specific */
+        .status-tabs {
+            display: flex;
+            gap: var(--space-2);
+            margin-bottom: var(--space-6);
+            flex-wrap: wrap;
+        }
+
+        .status-tab {
+            padding: var(--space-3) var(--space-6);
+            border-radius: var(--radius-full);
+            background: white;
+            border: 2px solid var(--gray-200);
+            font-weight: var(--font-medium);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .status-tab:hover {
+            border-color: var(--primary-500);
+            color: var(--primary-500);
+        }
+
+        .status-tab.active {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: transparent;
+        }
+
+        .prescription-list {
+            display: grid;
+            gap: var(--space-4);
+        }
+
+        .prescription-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-fast);
+        }
+
+        .prescription-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .prescription-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--space-4);
+            padding-bottom: var(--space-4);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .prescription-info {
+            flex: 1;
+        }
+
+        .prescription-number {
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            color: var(--gray-900);
+            margin-bottom: var(--space-1);
+        }
+
+        .prescription-meta {
+            display: flex;
+            gap: var(--space-4);
+            font-size: var(--text-sm);
+            color: var(--gray-500);
+            flex-wrap: wrap;
+        }
+
+        .prescription-status {
+            text-align: right;
+        }
+
+        .medications-list {
+            margin-bottom: var(--space-4);
+        }
+
+        .medication-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-3);
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-2);
+        }
+
+        .medication-name {
+            font-weight: var(--font-medium);
+            color: var(--gray-900);
+            margin-bottom: var(--space-1);
+        }
+
+        .medication-dosage {
+            font-size: var(--text-sm);
+            color: var(--gray-600);
+        }
+
+        .medication-quantity {
+            font-weight: var(--font-semibold);
+            color: var(--primary-500);
+        }
+
+        .prescription-actions {
+            display: flex;
+            gap: var(--space-2);
+            justify-content: flex-end;
+        }
+
+        @media (max-width: 1023px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .header {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .prescription-header {
+                flex-direction: column;
+            }
+
+            .prescription-status {
+                text-align: left;
+                margin-top: var(--space-2);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="logo-icon"></div>
+                <div class="sidebar-logo-text">HMS</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="../dashboard.html" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="../patients/list.html" class="nav-item">
+                <span class="nav-icon">👥</span>
+                <span>Patients</span>
+            </a>
+            <a href="../patients/queue.html" class="nav-item">
+                <span class="nav-icon">⏱️</span>
+                <span>Queue</span>
+            </a>
+            <a href="inventory.html" class="nav-item active">
+                <span class="nav-icon">💊</span>
+                <span>Pharmacy</span>
+            </a>
+            <a href="../laboratory/requests.html" class="nav-item">
+                <span class="nav-icon">🔬</span>
+                <span>Laboratory</span>
+            </a>
+            <a href="../billing/invoices.html" class="nav-item">
+                <span class="nav-icon">💰</span>
+                <span>Billing</span>
+            </a>
+            <a href="../reports/analytics.html" class="nav-item">
+                <span class="nav-icon">📈</span>
+                <span>Reports</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn btn-ghost w-full" onclick="Auth.logout()">
+                <span>🚪</span>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="user-avatar" id="userAvatar"></div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-area">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Prescriptions</h1>
+                    <div class="breadcrumb">
+                        <a href="../dashboard.html">Dashboard</a>
+                        <span class="breadcrumb-separator">›</span>
+                        <a href="inventory.html">Pharmacy</a>
+                        <span class="breadcrumb-separator">›</span>
+                        <span class="breadcrumb-current">Prescriptions</span>
+                    </div>
+                </div>
+                <div>
+                    <a href="inventory.html" class="btn btn-secondary">
+                        <span>💊</span>
+                        <span>Inventory</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Status Tabs -->
+            <div class="status-tabs">
+                <button class="status-tab active" data-status="all">All Prescriptions</button>
+                <button class="status-tab" data-status="Pending">Pending</button>
+                <button class="status-tab" data-status="Dispensed">Dispensed</button>
+                <button class="status-tab" data-status="PartiallyDispensed">Partially Dispensed</button>
+            </div>
+
+            <!-- Prescription List -->
+            <div class="prescription-list" id="prescriptionList">
+                <!-- Prescriptions will be loaded here -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <div class="empty-state-icon">📋</div>
+                <div class="empty-state-title">No prescriptions found</div>
+                <div class="empty-state-message">Prescriptions will appear here when doctors create them</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <!-- Scripts -->
+    <script src="../assets/js/utils/icons.js"></script>
+    <script src="../assets/js/utils/icon-init.js"></script>
+    <script src="../assets/js/core/storage.js"></script>
+    <script src="../assets/js/utils/helpers.js"></script>
+    <script src="../assets/js/data/generator.js"></script>
+    <script src="../assets/js/modules/auth.js"></script>
+    <script src="../assets/js/components/ui.js"></script>
+
+    <script>
+        // Require authentication
+        Auth.requireAuth();
+
+        // Get current user
+        const currentUser = Auth.getCurrentUser();
+        document.getElementById('userAvatar').textContent = Auth.getUserInitials();
+
+        // State
+        let currentStatus = 'all';
+
+        // Load prescriptions
+        function loadPrescriptions() {
+            let prescriptions = storage.getAll('prescriptions');
+
+            // Filter by status
+            if (currentStatus !== 'all') {
+                prescriptions = prescriptions.filter(p => p.status === currentStatus);
+            }
+
+            // Sort by date (newest first)
+            prescriptions.sort((a, b) => new Date(b.prescribedDate) - new Date(a.prescribedDate));
+
+            renderPrescriptions(prescriptions);
+        }
+
+        // Render prescriptions
+        function renderPrescriptions(prescriptions) {
+            const prescriptionList = document.getElementById('prescriptionList');
+            const emptyState = document.getElementById('emptyState');
+
+            if (prescriptions.length === 0) {
+                prescriptionList.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            prescriptionList.style.display = 'grid';
+            emptyState.style.display = 'none';
+
+            const html = prescriptions.map(prescription => {
+                const patient = storage.getById('patients', prescription.patientId);
+                const doctor = storage.getById('users', prescription.prescribedBy);
+
+                const patientName = patient ? `${patient.firstName} ${patient.lastName}` : 'Unknown Patient';
+                const doctorName = doctor ? doctor.name : 'Unknown Doctor';
+
+                return `
+          <div class="prescription-card">
+            <div class="prescription-header">
+              <div class="prescription-info">
+                <div class="prescription-number">${prescription.id}</div>
+                <div class="prescription-meta">
+                  <span>👤 ${patientName}</span>
+                  <span>👨‍⚕️ Dr. ${doctorName}</span>
+                  <span>📅 ${DateUtils.formatDate(prescription.prescribedDate, 'datetime')}</span>
+                </div>
+              </div>
+              <div class="prescription-status">
+                <span class="badge badge-${prescription.status === 'Dispensed' ? 'success' :
+                        prescription.status === 'PartiallyDispensed' ? 'warning' :
+                            'info'
+                    }">
+                  ${prescription.status}
+                </span>
+              </div>
+            </div>
+
+            <div class="medications-list">
+              ${prescription.medications.map(med => `
+                <div class="medication-item">
+                  <div>
+                    <div class="medication-name">${med.drugName}</div>
+                    <div class="medication-dosage">
+                      ${med.dosage} • ${med.frequency} • ${med.duration}
+                    </div>
+                  </div>
+                  <div class="medication-quantity">
+                    ${med.quantity} ${med.form}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="prescription-actions">
+              ${prescription.status === 'Pending' || prescription.status === 'PartiallyDispensed' ? `
+                <button class="btn btn-primary btn-sm" onclick="dispense('${prescription.id}')">
+                  <span>💊</span>
+                  <span>Dispense</span>
+                </button>
+              ` : ''}
+              ${prescription.status === 'Dispensed' ? `
+                <span style="color: var(--success); font-size: var(--text-sm);">✓ Dispensed on ${DateUtils.formatDate(prescription.dispensedDate, 'short')}</span>
+              ` : ''}
+            </div>
+          </div>
+        `;
+            }).join('');
+
+            prescriptionList.innerHTML = html;
+        }
+
+        // Status tab switching
+        document.querySelectorAll('.status-tab').forEach(tab => {
+            tab.addEventListener('click', function () {
+                document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentStatus = this.dataset.status;
+                loadPrescriptions();
+            });
+        });
+
+        // Dispense prescription
+        function dispense(prescriptionId) {
+            const prescription = storage.getById('prescriptions', prescriptionId);
+            const patient = storage.getById('patients', prescription.patientId);
+            const batches = storage.getAll('drug_batches');
+            const drugs = storage.getAll('drugs');
+
+            // Check stock availability using FEFO
+            let canDispense = true;
+            const dispensingDetails = [];
+
+            for (const med of prescription.medications) {
+                const drug = drugs.find(d => d.name === med.drugName);
+                if (!drug) {
+                    Toast.error(`Drug not found: ${med.drugName}`);
+                    return;
+                }
+
+                // Get available batches for this drug (sorted by expiry date - FEFO)
+                const drugBatches = batches
+                    .filter(b => b.drugId === drug.id && b.quantity > 0)
+                    .sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
+
+                const totalAvailable = drugBatches.reduce((sum, b) => sum + b.quantity, 0);
+
+                if (totalAvailable < med.quantity) {
+                    canDispense = false;
+                    Toast.error(`Insufficient stock for ${med.drugName}. Available: ${totalAvailable}, Required: ${med.quantity}`);
+                    return;
+                }
+
+                dispensingDetails.push({
+                    drug,
+                    medication: med,
+                    batches: drugBatches
+                });
+            }
+
+            if (!canDispense) return;
+
+            // Show confirmation modal
+            Modal.show({
+                title: 'Dispense Prescription',
+                size: 'lg',
+                content: `
+          <p><strong>Patient:</strong> ${patient.firstName} ${patient.lastName}</p>
+          <p><strong>Prescription:</strong> ${prescription.id}</p>
+          <br>
+          <h4 style="margin-bottom: var(--space-3);">Medications to Dispense:</h4>
+          ${prescription.medications.map(med => `
+            <div style="padding: var(--space-2); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--space-2);">
+              <strong>${med.drugName}</strong> - ${med.quantity} ${med.form}
+            </div>
+          `).join('')}
+          <br>
+          <p style="color: var(--gray-600);">This will deduct stock using FEFO (First Expiry First Out) logic and generate a bill.</p>
+        `,
+                buttons: [
+                    {
+                        text: 'Cancel',
+                        action: 'cancel',
+                        className: 'btn-secondary',
+                        onClick: () => Modal.close(document.querySelector('.modal-backdrop'))
+                    },
+                    {
+                        text: 'Confirm Dispensation',
+                        action: 'confirm',
+                        className: 'btn-primary',
+                        onClick: () => {
+                            Loading.show('Dispensing medications...');
+
+                            setTimeout(() => {
+                                // Deduct stock using FEFO
+                                let totalAmount = 0;
+                                const billItems = [];
+
+                                for (const detail of dispensingDetails) {
+                                    let remainingQty = detail.medication.quantity;
+
+                                    for (const batch of detail.batches) {
+                                        if (remainingQty <= 0) break;
+
+                                        const qtyToDeduct = Math.min(batch.quantity, remainingQty);
+                                        batch.quantity -= qtyToDeduct;
+                                        remainingQty -= qtyToDeduct;
+
+                                        // Update batch in storage
+                                        storage.update('drug_batches', batch.id, { quantity: batch.quantity });
+                                    }
+
+                                    const itemTotal = detail.drug.unitPrice * detail.medication.quantity;
+                                    totalAmount += itemTotal;
+
+                                    billItems.push({
+                                        description: `${detail.drug.name} (${detail.medication.quantity} ${detail.medication.form})`,
+                                        quantity: detail.medication.quantity,
+                                        unitPrice: detail.drug.unitPrice,
+                                        total: itemTotal
+                                    });
+                                }
+
+                                // Update prescription status
+                                storage.update('prescriptions', prescription.id, {
+                                    status: 'Dispensed',
+                                    dispensedDate: new Date().toISOString(),
+                                    dispensedBy: currentUser.id
+                                });
+
+                                // Create bill
+                                const billId = IDGenerator.generateBillNumber();
+                                storage.add('bills', {
+                                    id: billId,
+                                    patientId: prescription.patientId,
+                                    billDate: new Date().toISOString(),
+                                    items: billItems,
+                                    subtotal: totalAmount,
+                                    tax: totalAmount * 0.16, // 16% VAT
+                                    total: totalAmount * 1.16,
+                                    status: 'Pending',
+                                    createdBy: currentUser.id,
+                                    createdAt: new Date().toISOString()
+                                });
+
+                                Loading.hide();
+                                Toast.success(`Prescription dispensed successfully! Bill ${billId} created.`);
+                                Modal.close(document.querySelector('.modal-backdrop'));
+                                loadPrescriptions();
+                            }, 1000);
+                        }
+                    }
+                ]
+            });
+        }
+
+        // Initialize
+        loadPrescriptions();
+    </script>
+</body>
+
+</html>
